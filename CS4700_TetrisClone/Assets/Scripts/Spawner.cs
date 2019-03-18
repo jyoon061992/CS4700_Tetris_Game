@@ -6,6 +6,7 @@ public class Spawner : MonoBehaviour
 {
 
     public GameObject[] blocks;
+    public static GameObject activeBlock;
     int randomblock;
     bool isBlockPlaced;
 
@@ -26,7 +27,7 @@ public class Spawner : MonoBehaviour
     {
         if (isBlockPlaced) {
             randomblock = Random.Range(0, blocks.Length);
-            Instantiate(blocks[randomblock], transform.position, Quaternion.identity);
+            activeBlock = Instantiate(blocks[randomblock], transform.position, Quaternion.identity);
             isBlockPlaced = false;
         }
     }
