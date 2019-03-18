@@ -7,17 +7,17 @@ public class Spawner : MonoBehaviour
 
     public GameObject[] blocks;
     public static GameObject activeBlock;
-    int randomblock;
-    bool isBlockPlaced;
-
-    // Start is called before the first frame update
+    private int randomBlock;
+    private int oldRandomBlock;
+    public bool isBlockPlaced;
+    
     void Awake()
     {
+        oldRandomBlock = 7;
         isBlockPlaced = true;
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         SpawnRandom();
     }
@@ -25,10 +25,22 @@ public class Spawner : MonoBehaviour
 
     void SpawnRandom()
     {
+        //pseudo random - slightly biased against a repeating piece, but only 1 reroll in original game, possibility of heavy droughts adds to the challenge
         if (isBlockPlaced) {
-            randomblock = Random.Range(0, blocks.Length);
-            activeBlock = Instantiate(blocks[randomblock], transform.position, Quaternion.identity);
-            isBlockPlaced = false;
+            randomBlock = Random.Range(0, blocks.Length+1);
+            if (randomBlock < blocks.Length && randomBlock != oldRandomBlock)
+            {
+                activeBlock = Instantiate(blocks[randomBlock], transform.position, Quaternion.identity);
+                isBlockPlaced = false;
+                oldRandomBlock = randomBlock;
+            }
+            else
+            {
+                randomBlock = Random.Range(0, blocks.Length);
+                activeBlock = Instantiate(blocks[randomBlock], transform.position, Quaternion.identity);
+                isBlockPlaced = false;
+                oldRandomBlock = randomBlock;
+            }
         }
     }
 
