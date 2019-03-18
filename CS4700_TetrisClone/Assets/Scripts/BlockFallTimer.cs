@@ -5,23 +5,18 @@ using UnityEngine;
 public class BlockFallTimer : MonoBehaviour
 {
 
-    public int level;                   //set level based on # of line clears
+    private int level;                   //set level based on # of line clears
     private float timer;                //set timer delay based on level
     private float alarm;                //set to timer every time it hits 0
+    public int startLevel;            //what level the player starts at
 
     void Awake()
     {
-        QualitySettings.vSyncCount = 0;
-        level = 9;
+        level = startLevel;
     }
 
     void FixedUpdate()
     {
-        if (Application.targetFrameRate != 60)
-        {
-            Application.targetFrameRate = 60;
-        }
-        Debug.Log((int)1 / Time.deltaTime);
         SetTimer();
         FallSpeed();
     }
@@ -55,7 +50,13 @@ public class BlockFallTimer : MonoBehaviour
             Spawner.activeBlock.transform.position = new Vector3(Spawner.activeBlock.transform.position.x, Spawner.activeBlock.transform.position.y - 1, Spawner.activeBlock.transform.position.z);
             alarm = timer;
         }
-
+       
     }
 
+    //formula for going to the next level:
+    //Mathf.Min(startLevel * 10 + 10, Mathf.Max(100, (startLevel * 10 - 50)));
+    //this will give you a number which is the number of lines that have to be cleared to go to the next level
+    //from then on, advance the level by 10 line clears
+    //e.g. starting at level 9 means clearing 100 lines to go to level 10, then 10 lines to go to level 11
+    //pros start at level 18 for this reason so they can clear 100 lines at that speed
 }
