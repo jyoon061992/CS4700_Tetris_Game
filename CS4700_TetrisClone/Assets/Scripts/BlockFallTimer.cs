@@ -5,14 +5,16 @@ using UnityEngine;
 public class BlockFallTimer : MonoBehaviour
 {
 
-    private int level;                   //set level based on # of line clears
+    private int level;                  //set level based on # of line clears
     private float timer;                //set timer delay based on level
-    private float alarm;                //set to timer every time it hits 0
-    public int startLevel;            //what level the player starts at
+    public static float alarm;          //set to timer every time it hits 0
+    public int startLevel;              //what level the player starts at
 
     void Awake()
     {
         level = startLevel;
+        SetTimer();
+        alarm = timer;
     }
 
     void FixedUpdate()
