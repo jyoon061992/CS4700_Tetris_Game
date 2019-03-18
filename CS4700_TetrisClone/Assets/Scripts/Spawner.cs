@@ -9,7 +9,7 @@ public class Spawner : MonoBehaviour
     public static GameObject activeBlock;
     private int randomBlock;
     private int oldRandomBlock;
-    public bool isBlockPlaced;
+    public static bool isBlockPlaced;
     
     void Awake()
     {
