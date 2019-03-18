@@ -13,6 +13,7 @@ public class Spawner : MonoBehaviour
     
     void Awake()
     {
+        MatrixGrid.InitializeGrid();
         oldRandomBlock = 7;
         isBlockPlaced = true;
     }
@@ -27,6 +28,12 @@ public class Spawner : MonoBehaviour
     {
         //pseudo random - slightly biased against a repeating piece, but only 1 reroll in original game, possibility of heavy droughts adds to the challenge
         if (isBlockPlaced) {
+            /*if block is placed, begin timer/countdown in this section
+            *
+            *
+            * 
+            * 
+            */
             randomBlock = Random.Range(0, blocks.Length+1);
             if (randomBlock < blocks.Length && randomBlock != oldRandomBlock)
             {

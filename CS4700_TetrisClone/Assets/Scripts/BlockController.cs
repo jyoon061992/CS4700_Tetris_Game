@@ -6,6 +6,7 @@ public class BlockController : MonoBehaviour
 {
 
     private float doubleAngle = 90f;
+    private float quadrupleAngle = 90f;
 
     void FixedUpdate()
     {
@@ -31,27 +32,41 @@ public class BlockController : MonoBehaviour
     }
 
 
-    void RotateBlock() //should not rotate until figuring out if rotate is allowed since blocks may be in the way
+    void RotateInput() //should not rotate until figuring out if rotate is allowed since blocks may be in the way
     {
-        if (gameObject.tag.Equals("nRotateBlock")) //no rotations - blocks with no rotations (O block)
+        if (gameObject.tag.Equals("nRotateBlock")) //no rotations - blocks with no rotations (O block) - for readability and exiting method every time it is attempted
         {
             return;
         } else if (gameObject.tag.Equals("dRotateBlock")) //double rotations - blocks with two states of rotations
         {
             if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow))
             {
-                transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.RoundToInt(transform.eulerAngles.z + doubleAngle));
-                doubleAngle = -doubleAngle;
+                //if the rotate is allowed
+                RotateBlock();
             }
         } else if (gameObject.tag.Equals("qRotateBlock")) //quadruple rotations - blocks with four states of rotations
         {
             if (Input.GetKeyDown(KeyCode.RightArrow))
             {
-                transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.RoundToInt(transform.eulerAngles.z - 90f));
+                quadrupleAngle = -90f;
+                RotateBlock();
             } else if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
-                transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.RoundToInt(transform.eulerAngles.z + 90f));
+                quadrupleAngle = 90f;
+                RotateBlock();
             }
+        }
+    }
+
+    void RotateBlock()
+    {
+        if (gameObject.tag.Equals("dRotateBlock"))
+        {
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.RoundToInt(transform.eulerAngles.z + doubleAngle));
+            doubleAngle = -doubleAngle;
+        } else if (gameObject.tag.Equals("qRotateBlock"))
+        {
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.RoundToInt(transform.eulerAngles.z + quadrupleAngle));
         }
     }
 
