@@ -9,7 +9,8 @@ public class BlockController : MonoBehaviour
     private float quadrupleAngle = 90f;
     private bool moveAllowed = false;
     private bool rotateAllowed = false;
-
+	private float delayStart, initialDelay = 4f/15f, autoDelay = .1f, delay;
+	private bool useDelay = true;
 
     void FixedUpdate()
     {
@@ -23,40 +24,73 @@ public class BlockController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            foreach (Transform child in transform)
-            {
-                moveAllowed = !MatrixGrid.IsBlockLeft(child.position); //if there is no block to the left, move left is allowed
-                if (!moveAllowed)
-                {
-                    return;
-                }
-            }
-            MoveBlockLeft();
+			delayStart = Time.time;
+			delay = initialDelay;
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
-            foreach (Transform child in transform)
-            {
-                moveAllowed = !MatrixGrid.IsBlockRight(child.position); //if there is no block to the right, move right is allowed
-                if (!moveAllowed)
-                {
-                    return;
-                }
-            }
-            MoveBlockRight();
+			delayStart = Time.time;
+			delay = initialDelay;
         }
         else if (Input.GetKeyDown(KeyCode.S)) //holding it should bring it down, but getkey is too fast, so introduce a timer to bring it down
         {
-            foreach (Transform child in transform)
-            {
-                moveAllowed = !MatrixGrid.ReachedBottom(child.position);
-                if (!moveAllowed)
-                {
-                    return;
-                }
-            }
-            SoftDrop();
+			delayStart = Time.time;
+			delay = initialDelay;
         }
+
+		if (Input.GetKeyUp(KeyCode.A)) {
+			foreach (Transform child in transform) {
+				moveAllowed = !MatrixGrid.IsBlockLeft(child.position); //if there is no block to the left, move left is allowed
+				if (!moveAllowed) {
+					return;
+				}
+			}
+			MoveBlockLeft();
+		}
+		else if (Input.GetKeyUp(KeyCode.D)) {
+			foreach (Transform child in transform) {
+				moveAllowed = !MatrixGrid.IsBlockRight(child.position); //if there is no block to the right, move right is allowed
+				if (!moveAllowed) {
+					return;
+				}
+			}
+			MoveBlockRight();
+		}
+		else if (Input.GetKeyUp(KeyCode.S)) //holding it should bring it down, but getkey is too fast, so introduce a timer to bring it down
+		{
+			delayStart = Time.time;
+			delay = initialDelay;
+			foreach (Transform child in transform) {
+				moveAllowed = !MatrixGrid.ReachedBottom(child.position);
+				if (!moveAllowed) {
+					return;
+				}
+			}
+			SoftDrop();
+		}
+
+
+		if (delayStart + delay <= Time.time) {
+			delayStart = Time.time + autoDelay;
+			delay = autoDelay;
+			if (Input.GetKey(KeyCode.A)) {
+				foreach (Transform child in transform) {
+					moveAllowed = !MatrixGrid.IsBlockLeft(child.position); //if there is no block to the left, move left is allowed
+					if (!moveAllowed) {
+						return;
+					}
+				}
+				MoveBlockLeft();
+			} else if (Input.GetKey(KeyCode.D)) {
+				foreach (Transform child in transform) {
+					moveAllowed = !MatrixGrid.IsBlockRight(child.position); //if there is no block to the right, move right is allowed
+					if (!moveAllowed) {
+						return;
+					}
+				}
+				MoveBlockRight();
+			}
+		}
     }
 
 
