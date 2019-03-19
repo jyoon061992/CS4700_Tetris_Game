@@ -16,7 +16,7 @@ public class BlockController : MonoBehaviour
     {
         MoveInput();
         RotateInput();
-        CheckBlockPosition();
+        StartCoroutine(CheckBlockPosition());
     }
 
 
@@ -56,7 +56,7 @@ public class BlockController : MonoBehaviour
 			}
 			MoveBlockRight();
 		}
-		else if (Input.GetKeyUp(KeyCode.S)) //holding it should bring it down, but getkey is too fast, so introduce a timer to bring it down
+		/*else if (Input.GetKeyUp(KeyCode.S)) //holding it should bring it down, but getkey is too fast, so introduce a timer to bring it down
 		{
 			delayStart = Time.time;
 			delay = initialDelay;
@@ -67,11 +67,12 @@ public class BlockController : MonoBehaviour
 				}
 			}
 			SoftDrop();
-		}
+		}*/
 
 
 		if (delayStart + delay <= Time.time) {
-			delayStart = Time.time + autoDelay;
+            delayStart = Time.time;
+            //delayStart = Time.time + autoDelay;
 			delay = autoDelay;
 			if (Input.GetKey(KeyCode.A)) {
 				foreach (Transform child in transform) {
@@ -149,7 +150,7 @@ public class BlockController : MonoBehaviour
         }
     }
 
-    void CheckBlockPosition()
+    IEnumerator CheckBlockPosition()
     {
         foreach (Transform child in transform)
         {
@@ -159,6 +160,8 @@ public class BlockController : MonoBehaviour
                 {
                     MatrixGrid.Lock(child2.position);
                 }
+                Spawner.activeBlock = null;
+                yield return new WaitForSeconds(BlockFallTimer.timer + (14f / 60f));
                 Spawner.isBlockPlaced = true;
                 GameObject.Destroy(this);
             }

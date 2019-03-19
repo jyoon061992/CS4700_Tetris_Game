@@ -84,7 +84,9 @@ public class MatrixGrid: MonoBehaviour
         }
     }
 
+    public static void ClearRows()
+    {
 
-
+    }
 
 }
