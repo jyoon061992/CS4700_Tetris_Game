@@ -156,12 +156,12 @@ public class BlockController : MonoBehaviour
         {
             if (MatrixGrid.ReachedBottom(child.position))
             {
+                Spawner.activeBlock = null;
+                yield return new WaitForSeconds(BlockFallTimer.timer + (14f / 60f));
                 foreach (Transform child2 in transform)
                 {
                     MatrixGrid.Lock(child2.position);
                 }
-                Spawner.activeBlock = null;
-                yield return new WaitForSeconds(BlockFallTimer.timer + (14f / 60f));
                 Spawner.isBlockPlaced = true;
                 GameObject.Destroy(this);
             }
