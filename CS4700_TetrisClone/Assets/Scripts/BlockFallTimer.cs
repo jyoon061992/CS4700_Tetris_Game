@@ -51,8 +51,7 @@ public class BlockFallTimer : MonoBehaviour
         {
             Spawner.activeBlock.transform.position = new Vector3(Spawner.activeBlock.transform.position.x, Spawner.activeBlock.transform.position.y - 1, Spawner.activeBlock.transform.position.z);
             alarm = timer;
-        }
-       
+        }  
     }
 
     //formula for going to the next level:

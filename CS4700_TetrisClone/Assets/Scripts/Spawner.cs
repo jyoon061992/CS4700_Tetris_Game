@@ -10,17 +10,27 @@ public class Spawner : MonoBehaviour
     private int randomBlock;
     private int oldRandomBlock;
     public static bool isBlockPlaced;
-    
+    private string boolArray;
+    private float timer = 1.6f;
+
     void Awake()
     {
         MatrixGrid.InitializeGrid();
         oldRandomBlock = 7;
         isBlockPlaced = true;
+        boolArray = "";
     }
 
     void FixedUpdate()
     {
+
         SpawnRandom();
+        timer -= Time.deltaTime;
+        if (timer <= 0f)
+        {
+            PrintToConsoleTest();
+            timer = 1.6f;
+        }
     }
 
 
@@ -28,6 +38,7 @@ public class Spawner : MonoBehaviour
     {
         //pseudo random - slightly biased against a repeating piece, but only 1 reroll in original game, possibility of heavy droughts adds to the challenge
         if (isBlockPlaced) {
+            activeBlock = null;
             /*if block is placed, begin timer/countdown in this section
             *
             *
@@ -49,6 +60,21 @@ public class Spawner : MonoBehaviour
                 oldRandomBlock = randomBlock;
             }
         }
+    }
+
+    void PrintToConsoleTest()
+    {
+        for (int i = 0; i < MatrixGrid.row; i++)
+        {
+            for (int j = 0; j < MatrixGrid.column; j++)
+            {
+                int integer = MatrixGrid.grid[i, j] ? 1 : 0;
+                boolArray += integer.ToString() + " ";
+            }
+            boolArray += "\n";
+        }
+        Debug.Log(boolArray + "\n\n DONE \n\n");
+        boolArray = "";
     }
 
 }
