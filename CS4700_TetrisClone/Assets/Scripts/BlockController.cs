@@ -5,8 +5,8 @@ using UnityEngine;
 public class BlockController : MonoBehaviour
 {
 
-    private float doubleAngle = 90f;
-    private float quadrupleAngle = 90f;
+    private int doubleAngle = 90;
+    private int quadrupleAngle = 90;
     private bool moveAllowed = false;
     private bool rotateAllowed = false;
 	private float delayStart, initialDelay = 4f/15f, autoDelay = .1f, delay;
@@ -111,11 +111,11 @@ public class BlockController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.RightArrow))
             {
-                quadrupleAngle = -90f;
+                quadrupleAngle = -90;
                 RotateBlock();
             } else if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
-                quadrupleAngle = 90f;
+                quadrupleAngle = 90;
                 RotateBlock();
             }
         }
@@ -142,11 +142,11 @@ public class BlockController : MonoBehaviour
     {
         if (gameObject.tag.Equals("dRotateBlock"))
         {
-            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.RoundToInt(transform.eulerAngles.z + doubleAngle));
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.RoundToInt(transform.eulerAngles.z + (int)doubleAngle));
             doubleAngle = -doubleAngle;
         } else if (gameObject.tag.Equals("qRotateBlock"))
         {
-            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.RoundToInt(transform.eulerAngles.z + quadrupleAngle));
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.RoundToInt(transform.eulerAngles.z + (int)quadrupleAngle));
         }
     }
 

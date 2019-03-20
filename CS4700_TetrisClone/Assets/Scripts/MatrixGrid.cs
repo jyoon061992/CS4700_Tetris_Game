@@ -7,6 +7,7 @@ public class MatrixGrid : MonoBehaviour
     public static int row = 20;
     public static int column = 10;
     public static bool[,] grid = new bool[row, column];
+    public static GameObject[,] blockGrid = new GameObject[row, column];
     public static int rowClears = 0;
     private static bool rowCleared = false;
 
