@@ -38,7 +38,7 @@ public class MatrixGrid : MonoBehaviour
 
     public static bool IsWithinBoundaries(Vector3 position)
     {
-        if (position.x >= -5 && position.x <= 4 && position.y >= -10)
+        if ((position.x >= -5) && (position.x <= 4) && (position.y >= -10))
         {
             return true;
         }
@@ -54,7 +54,6 @@ public class MatrixGrid : MonoBehaviour
 		} else {
 			return true;
 		}
-
 	}
 
     public static bool ReachedBottom(Vector3 position)
