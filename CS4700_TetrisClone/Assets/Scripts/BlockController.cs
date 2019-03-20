@@ -5,8 +5,8 @@ using UnityEngine;
 public class BlockController : MonoBehaviour
 {
 
-    private float doubleAngle = 90f;
-    private float quadrupleAngle = 90f;
+    private int doubleAngle = 90;
+    private int quadrupleAngle = 90;
     private bool moveAllowed = false;
     private bool rotateAllowed = false;
 	private float delayStart, initialDelay = 4f/15f, autoDelay = .1f, delay;
@@ -16,7 +16,7 @@ public class BlockController : MonoBehaviour
     {
         MoveInput();
         RotateInput();
-        CheckBlockPosition();
+        StartCoroutine(CheckBlockPosition());
     }
 
 
@@ -56,7 +56,7 @@ public class BlockController : MonoBehaviour
 			}
 			MoveBlockRight();
 		}
-		else if (Input.GetKeyUp(KeyCode.S)) //holding it should bring it down, but getkey is too fast, so introduce a timer to bring it down
+		/*else if (Input.GetKeyUp(KeyCode.S)) //holding it should bring it down, but getkey is too fast, so introduce a timer to bring it down
 		{
 			delayStart = Time.time;
 			delay = initialDelay;
@@ -67,11 +67,12 @@ public class BlockController : MonoBehaviour
 				}
 			}
 			SoftDrop();
-		}
+		}*/
 
 
 		if (delayStart + delay <= Time.time) {
-			delayStart = Time.time + autoDelay;
+            delayStart = Time.time;
+            //delayStart = Time.time + autoDelay;
 			delay = autoDelay;
 			if (Input.GetKey(KeyCode.A)) {
 				foreach (Transform child in transform) {
@@ -110,11 +111,11 @@ public class BlockController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.RightArrow))
             {
-                quadrupleAngle = -90f;
+                quadrupleAngle = -90;
                 RotateBlock();
             } else if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
-                quadrupleAngle = 90f;
+                quadrupleAngle = 90;
                 RotateBlock();
             }
         }
@@ -141,28 +142,52 @@ public class BlockController : MonoBehaviour
     {
         if (gameObject.tag.Equals("dRotateBlock"))
         {
-            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.RoundToInt(transform.eulerAngles.z + doubleAngle));
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.RoundToInt(transform.eulerAngles.z + (int)doubleAngle));
             doubleAngle = -doubleAngle;
         } else if (gameObject.tag.Equals("qRotateBlock"))
         {
-            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.RoundToInt(transform.eulerAngles.z + quadrupleAngle));
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.RoundToInt(transform.eulerAngles.z + (int)quadrupleAngle));
         }
     }
 
-    void CheckBlockPosition()
+    IEnumerator CheckBlockPosition()
     {
         foreach (Transform child in transform)
         {
             if (MatrixGrid.ReachedBottom(child.position))
             {
+                Spawner.activeBlock = null;
+                yield return new WaitForSeconds(BlockFallTimer.timer + (14f / 60f));
                 foreach (Transform child2 in transform)
                 {
                     MatrixGrid.Lock(child2.position);
                 }
+                CheckRowClears();
                 Spawner.isBlockPlaced = true;
                 GameObject.Destroy(this);
             }
         }
     }
+
+    void CheckRowClears()
+    {
+        MatrixGrid.rowClears = 0;
+        for (int i = 0; i < 20; i++)
+        {
+            if (MatrixGrid.IsRowClear(i))
+            {
+                MatrixGrid.rowClears++;
+                Debug.Log("Row " + i + " Clear!");
+                DeleteAndShift(i);
+            }
+        }
+    }
+
+    void DeleteAndShift(int rowNumber)
+    {
+        //Destroy()
+    }
+
+
 
 }

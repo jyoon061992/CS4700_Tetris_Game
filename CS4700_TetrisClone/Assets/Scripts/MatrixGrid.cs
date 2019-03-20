@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MatrixGrid: MonoBehaviour
+public class MatrixGrid : MonoBehaviour
 {
-    public static int row= 20;
+    public static int row = 20;
     public static int column = 10;
     public static bool[,] grid = new bool[row, column];
+    public static GameObject[,] blockGrid = new GameObject[row, column];
+    public static int rowClears = 0;
+    private static bool rowCleared = false;
 
     //-10 to 9 --> 0-19, -5 to 4 --> 0-9
     private static float ConvertArrayX(float positionx)
@@ -35,16 +38,19 @@ public class MatrixGrid: MonoBehaviour
 
     public static bool IsWithinBoundaries(Vector3 position)
     {
-        if (position.x >= -5 && position.x <= 4 && position.y >= -10){
+        if (position.x >= -5 && position.x <= 4 && position.y >= -10)
+        {
             return true;
-        } else{
+        }
+        else
+        {
             return false;
         }
     }
 
     public static bool ReachedBottom(Vector3 position)
     {
-        if (position.y == -10 || grid[(int)ConvertArrayY(position.y-1), (int)ConvertArrayX(position.x)])
+        if (position.y == -10 || grid[(int)ConvertArrayY(position.y - 1), (int)ConvertArrayX(position.x)])
         {
             grid[(int)ConvertArrayY(position.y), (int)ConvertArrayX(position.x)] = true;
             return true;
@@ -62,7 +68,7 @@ public class MatrixGrid: MonoBehaviour
 
     public static bool IsBlockLeft(Vector3 position)
     {
-        if (grid[(int)ConvertArrayY(position.y), (int)ConvertArrayX(position.x-1)] && IsWithinBoundaries(position))
+        if (grid[(int)ConvertArrayY(position.y), (int)ConvertArrayX(position.x - 1)] && IsWithinBoundaries(position))
         {
             return true;
         }
@@ -84,7 +90,27 @@ public class MatrixGrid: MonoBehaviour
         }
     }
 
-
-
-
+    public static bool IsRowClear(int rowNumber)
+    {
+        for (int j = 0; j < column; j++)
+        {
+            if (!grid[rowNumber, j])
+            {
+                rowCleared = false;
+                break;
+            }
+            else
+            {
+                rowCleared = true;
+            }
+        }
+        if (rowCleared)
+        {
+            for (int j = 0; j < column; j++)
+            {
+                grid[rowNumber, j] = false;
+            }
+        }
+        return rowCleared;
+    }
 }

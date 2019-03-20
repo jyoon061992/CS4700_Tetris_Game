@@ -6,9 +6,10 @@ public class BlockFallTimer : MonoBehaviour
 {
 
     private int level;                  //set level based on # of line clears
-    private float timer;                //set timer delay based on level
+    public static float timer;          //set timer delay based on level
     public static float alarm;          //set to timer every time it hits 0
     public int startLevel;              //what level the player starts at
+    private float softDropSpeed;
 
     void Awake()
     {
@@ -42,6 +43,8 @@ public class BlockFallTimer : MonoBehaviour
         } else if (level >= 29){
             timer = 1f / 60f;
         }
+
+        softDropSpeed = 1/30f;
     }
 
     void FallSpeed()
@@ -49,8 +52,19 @@ public class BlockFallTimer : MonoBehaviour
         alarm -= Time.deltaTime;
         if(alarm <= 0f)
         {
+            if (Spawner.activeBlock == null)
+            {
+                return;
+            }
             Spawner.activeBlock.transform.position = new Vector3(Spawner.activeBlock.transform.position.x, Spawner.activeBlock.transform.position.y - 1, Spawner.activeBlock.transform.position.z);
-            alarm = timer;
+            if (Input.GetKey(KeyCode.S))
+            {
+                alarm = softDropSpeed;
+            }
+            else
+            {
+                alarm = timer;
+            }
         }  
     }
 
