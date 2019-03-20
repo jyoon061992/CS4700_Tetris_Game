@@ -48,6 +48,15 @@ public class MatrixGrid : MonoBehaviour
         }
     }
 
+	public static bool CheckPosFilled(Vector3 pos) {
+		if (IsWithinBoundaries(pos)) {
+			return grid[(int)ConvertArrayY(pos.y), (int)ConvertArrayX(pos.x)];
+		} else {
+			return true;
+		}
+
+	}
+
     public static bool ReachedBottom(Vector3 position)
     {
         if (position.y == -10 || grid[(int)ConvertArrayY(position.y - 1), (int)ConvertArrayX(position.x)])

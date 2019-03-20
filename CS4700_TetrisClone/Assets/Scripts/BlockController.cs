@@ -11,8 +11,19 @@ public class BlockController : MonoBehaviour
     private bool rotateAllowed = false;
 	private float delayStart, initialDelay = 4f/15f, autoDelay = .1f, delay;
 	private bool useDelay = true;
+	private Matrix4x4 rot;
+	private Vector4 c1, c2, c3, c4;
+	private float rads = Mathf.Deg2Rad * 90f;
 
-    void FixedUpdate()
+	private void Start() {
+		c1 = new Vector4(Mathf.Cos(rads), -Mathf.Sin(rads), 0f, 0f);
+		c2 = new Vector4(Mathf.Sin(rads), Mathf.Cos(rads), 0f, 0f);
+		c3 = new Vector4(0, 0, 1, 0);
+		c4 = new Vector4(0, 0, 0, 1);
+		rot = new Matrix4x4(c1, c2, c3, c4);
+	}
+
+	void FixedUpdate()
     {
         MoveInput();
         RotateInput();
@@ -140,15 +151,25 @@ public class BlockController : MonoBehaviour
 
     void RotateBlock()
     {
-        if (gameObject.tag.Equals("dRotateBlock"))
-        {
-            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.RoundToInt(transform.eulerAngles.z + (int)doubleAngle));
-            doubleAngle = -doubleAngle;
-        } else if (gameObject.tag.Equals("qRotateBlock"))
-        {
-            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.RoundToInt(transform.eulerAngles.z + (int)quadrupleAngle));
-        }
-    }
+		bool moveAllowed = true; 
+
+		foreach (Transform child in transform) {
+			Vector3 tempPos = transform.position + (Vector3)(rot * child.localPosition);
+			moveAllowed = !MatrixGrid.CheckPosFilled(tempPos);
+
+			if (!moveAllowed) {
+				return;
+			}
+		}
+
+		if (gameObject.tag.Equals("dRotateBlock")) {
+			transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.RoundToInt(transform.eulerAngles.z + (int)doubleAngle));
+			doubleAngle = -doubleAngle;
+		}
+		else if (gameObject.tag.Equals("qRotateBlock")) {
+			transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.RoundToInt(transform.eulerAngles.z + (int)quadrupleAngle));
+		}
+	}
 
     IEnumerator CheckBlockPosition()
     {
