@@ -71,4 +71,19 @@ public class Spawner : MonoBehaviour
         boolArray = "";
     }
 
+    /*void PrintToConsoleTest()
+    {
+        for (int i = 0; i < MatrixGrid.row; i++)
+        {
+            for (int j = 0; j < MatrixGrid.column; j++)
+            {
+                int integer = MatrixGrid.blockGrid[i, j] != null? 1 : 0;
+                boolArray += integer.ToString() + " ";
+            }
+            boolArray += "\n";
+        }
+        Debug.Log(boolArray + "\n\n DONE \n\n");
+        boolArray = "";
+    }*/
+
 }

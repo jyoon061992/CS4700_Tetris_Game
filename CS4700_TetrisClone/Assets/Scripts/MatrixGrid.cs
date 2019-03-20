@@ -150,9 +150,17 @@ public class MatrixGrid : MonoBehaviour
         {
             for (int j = 0; j < column; j++)
             {
-                grid[i, j] = grid[i + 1, j];
-                blockGrid[i, j] = blockGrid[i + 1, j];
-                blockGrid[i, j].transform.position = new Vector3(j - 5, i - 11);
+                if (blockGrid[i+1, j] != null && i+1<row)
+                {
+                    grid[i, j] = grid[i + 1, j];
+                    blockGrid[i, j] = blockGrid[i + 1, j];
+                    blockGrid[i, j].transform.position = new Vector3(j - 5, i - 10);
+                }
+                else
+                {
+                    blockGrid[i, j] = null;
+                    grid[i, j] = false;
+                }
             }
         }
     }
