@@ -117,8 +117,32 @@ public class MatrixGrid : MonoBehaviour
             for (int j = 0; j < column; j++)
             {
                 grid[rowNumber, j] = false;
+                Destroy(blockGrid[rowNumber, j].gameObject);
             }
+            ShiftRow(rowNumber);
         }
         return rowCleared;
     }
+
+    public static void ShiftRow(int rowNumber)
+    {
+        for (int i = rowNumber; i < row; i++)
+        {
+            for (int j = 0; j < column; j++)
+            {
+                grid[i, j] = grid[i + 1, j];
+                blockGrid[i, j] = blockGrid[i + 1, j];
+                blockGrid[i, j].transform.position = new Vector3(j - 5, i - 11);
+            }
+        }
+    }
+
+
+    public static void SetGrid(Vector3 position, GameObject fillObject)
+    {
+        blockGrid[(int)ConvertArrayY(position.y), (int)ConvertArrayX(position.x)] = fillObject;
+    }
+
+
+
 }

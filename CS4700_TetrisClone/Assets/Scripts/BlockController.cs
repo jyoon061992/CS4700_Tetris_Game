@@ -131,7 +131,6 @@ public class BlockController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.RightArrow))
             {
 				curRot = -90;
-
 				c1 = new Vector4(Mathf.Cos(Mathf.Deg2Rad * curRot), Mathf.Sin(Mathf.Deg2Rad * curRot), 0f, 0f);
 				c2 = new Vector4(-Mathf.Sin(Mathf.Deg2Rad * curRot), Mathf.Cos(Mathf.Deg2Rad * curRot), 0f, 0f);
 				c3 = new Vector4(0, 0, 1, 0);
@@ -201,6 +200,7 @@ public class BlockController : MonoBehaviour
                 foreach (Transform child2 in transform)
                 {
                     MatrixGrid.Lock(child2.position);
+                    MatrixGrid.SetGrid(child2.position, child2.gameObject);
                 }
                 CheckRowClears();
                 Spawner.isBlockPlaced = true;
@@ -218,14 +218,8 @@ public class BlockController : MonoBehaviour
             {
                 MatrixGrid.rowClears++;
                 Debug.Log("Row " + i + " Clear!");
-                DeleteAndShift(i);
             }
         }
-    }
-
-    void DeleteAndShift(int rowNumber)
-    {
-        //Destroy()
     }
 
 
