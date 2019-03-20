@@ -14,10 +14,11 @@ public class BlockController : MonoBehaviour
 	private Matrix4x4 rot;
 	private Vector4 c1, c2, c3, c4;
 	private float rads = Mathf.Deg2Rad * 90f;
+	private float curRot = 0;
 
 	private void Start() {
-		c1 = new Vector4(Mathf.Cos(rads), -Mathf.Sin(rads), 0f, 0f);
-		c2 = new Vector4(Mathf.Sin(rads), Mathf.Cos(rads), 0f, 0f);
+		c1 = new Vector4(Mathf.Cos(rads), Mathf.Sin(rads), 0f, 0f);
+		c2 = new Vector4(-Mathf.Sin(rads), Mathf.Cos(rads), 0f, 0f);
 		c3 = new Vector4(0, 0, 1, 0);
 		c4 = new Vector4(0, 0, 0, 1);
 		rot = new Matrix4x4(c1, c2, c3, c4);
@@ -115,21 +116,38 @@ public class BlockController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow))
             {
-                //if the rotate is allowed
-                RotateBlock();
+				//if the rotate is allowed
+				curRot = 90;
+
+				c1 = new Vector4(Mathf.Cos(Mathf.Deg2Rad * curRot), Mathf.Sin(Mathf.Deg2Rad * curRot), 0f, 0f);
+				c2 = new Vector4(-Mathf.Sin(Mathf.Deg2Rad * curRot), Mathf.Cos(Mathf.Deg2Rad * curRot), 0f, 0f);
+				c3 = new Vector4(0, 0, 1, 0);
+				c4 = new Vector4(0, 0, 0, 1);
+				rot = new Matrix4x4(c1, c2, c3, c4);
+				RotateBlock();
             }
         } else if (gameObject.tag.Equals("qRotateBlock")) //quadruple rotations - blocks with four states of rotations
         {
             if (Input.GetKeyDown(KeyCode.RightArrow))
             {
-                quadrupleAngle = -90;
-                RotateBlock();
-            } else if (Input.GetKeyDown(KeyCode.LeftArrow))
-            {
-                quadrupleAngle = 90;
-                RotateBlock();
-            }
-        }
+				curRot = -90;
+
+				c1 = new Vector4(Mathf.Cos(Mathf.Deg2Rad * curRot), Mathf.Sin(Mathf.Deg2Rad * curRot), 0f, 0f);
+				c2 = new Vector4(-Mathf.Sin(Mathf.Deg2Rad * curRot), Mathf.Cos(Mathf.Deg2Rad * curRot), 0f, 0f);
+				c3 = new Vector4(0, 0, 1, 0);
+				c4 = new Vector4(0, 0, 0, 1);
+				rot = new Matrix4x4(c1, c2, c3, c4);
+				RotateBlock();
+			} else if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+                curRot = 90;
+				c1 = new Vector4(Mathf.Cos(Mathf.Deg2Rad * curRot), Mathf.Sin(Mathf.Deg2Rad * curRot), 0f, 0f);
+				c2 = new Vector4(-Mathf.Sin(Mathf.Deg2Rad * curRot), Mathf.Cos(Mathf.Deg2Rad * curRot), 0f, 0f);
+				c3 = new Vector4(0, 0, 1, 0);
+				c4 = new Vector4(0, 0, 0, 1);
+				rot = new Matrix4x4(c1, c2, c3, c4);
+				RotateBlock();
+			}
+		}
     }
 
 
@@ -156,6 +174,7 @@ public class BlockController : MonoBehaviour
 		foreach (Transform child in transform) {
 			Vector3 tempPos = transform.position + (Vector3)(rot * child.localPosition);
 			moveAllowed = !MatrixGrid.CheckPosFilled(tempPos);
+			//Debug.Log(tempPos + " " + (Vector3)(rot * child.localPosition));
 
 			if (!moveAllowed) {
 				return;
@@ -163,11 +182,11 @@ public class BlockController : MonoBehaviour
 		}
 
 		if (gameObject.tag.Equals("dRotateBlock")) {
-			transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.RoundToInt(transform.eulerAngles.z + (int)doubleAngle));
-			doubleAngle = -doubleAngle;
+			transform.Rotate(Vector3.forward, curRot);
+			//doubleAngle = -doubleAngle;
 		}
 		else if (gameObject.tag.Equals("qRotateBlock")) {
-			transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, Mathf.RoundToInt(transform.eulerAngles.z + (int)quadrupleAngle));
+			transform.Rotate(Vector3.forward, curRot);
 		}
 	}
 
