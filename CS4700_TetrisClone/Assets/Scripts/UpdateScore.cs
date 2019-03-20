@@ -7,11 +7,14 @@ public class UpdateScore : MonoBehaviour
 {
 
     public static TextMeshProUGUI scoreText;
+    public static TextMeshProUGUI levelText;
     public static int score = 0;
 
 
     void Awake()
     {
+        scoreText = GetComponent<TextMeshProUGUI>();
+        levelText = GameObject.Find("Level").GetComponent<TextMeshProUGUI>();
         DisplayScore();
     }
 
@@ -23,13 +26,12 @@ public class UpdateScore : MonoBehaviour
     static void DisplayScore()
     {
         scoreText.text = "Score: " + score.ToString("000000");
+        levelText.text = "Level: " + BlockFallTimer.level.ToString();
     }
 
 
     public static void SetScore()
     {
-        
-
 
 
         if(score > 999999)

@@ -5,7 +5,7 @@ using UnityEngine;
 public class BlockFallTimer : MonoBehaviour
 {
 
-    private int level;                  //set level based on # of line clears
+    public static int level;                  //set level based on # of line clears
     public static float timer;          //set timer delay based on level
     public static float alarm;          //set to timer every time it hits 0
     public int startLevel;              //what level the player starts at
