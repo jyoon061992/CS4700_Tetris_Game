@@ -48,9 +48,29 @@ public class MatrixGrid : MonoBehaviour
         }
     }
 
+	private static bool IsInArray(Vector3 pos) {
+		if ((pos.x + 4) < 0) {
+			return false;
+		}
+
+		if ((pos.x + 4) >= 9) {
+			return false;
+		}
+
+		if ((pos.y + 10) < 0) {
+			return false;
+		}
+
+		if ((pos.y + 10) >= 20) {
+			return false;
+		}
+
+		return true;
+	}
+
 	public static bool CheckPosFilled(Vector3 pos) {
-		if (IsWithinBoundaries(pos)) {
-			return grid[(int)ConvertArrayY(pos.y), (int)ConvertArrayX(pos.x)];
+		if (IsInArray(pos)) {
+			return grid[(int)(pos.y + 10f), (int)(pos.x + 4f)];
 		} else {
 			return true;
 		}
