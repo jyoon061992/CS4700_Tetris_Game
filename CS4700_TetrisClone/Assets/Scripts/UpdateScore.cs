@@ -6,8 +6,8 @@ using TMPro;
 public class UpdateScore : MonoBehaviour
 {
 
-    public TextMeshProUGUI scoreText;
-    private int score = 0;
+    public static TextMeshProUGUI scoreText;
+    public static int score = 0;
 
 
     void Awake()
@@ -20,14 +20,16 @@ public class UpdateScore : MonoBehaviour
         //SetScore();
     }
 
-    void DisplayScore()
+    static void DisplayScore()
     {
         scoreText.text = "Score: " + score.ToString("000000");
     }
 
 
-    void SetScore()
+    public static void SetScore()
     {
+        
+
         if(score > 999999)
         {
             score = 999999;
