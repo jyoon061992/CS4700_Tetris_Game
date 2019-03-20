@@ -30,6 +30,8 @@ public class UpdateScore : MonoBehaviour
     {
         
 
+
+
         if(score > 999999)
         {
             score = 999999;
