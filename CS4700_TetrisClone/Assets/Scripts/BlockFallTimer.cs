@@ -60,12 +60,10 @@ public class BlockFallTimer : MonoBehaviour
             if (Input.GetKey(KeyCode.S))
             {
                 alarm = softDropSpeed;
-                Debug.Log("softdropspeed: " + softDropSpeed);
             }
             else
             {
                 alarm = timer;
-                Debug.Log("timer: " + timer);
             }
         }  
     }

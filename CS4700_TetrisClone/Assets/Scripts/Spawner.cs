@@ -25,18 +25,19 @@ public class Spawner : MonoBehaviour
     {
 
         SpawnRandom();
-        //timer -= Time.deltaTime;
-        //if (timer <= 0f)
-        //{
-            //PrintToConsoleTest();
-            //timer = 1.6f;
-        //}
+        ///*
+        timer -= Time.deltaTime;
+        if (timer <= 0f)
+        {
+            PrintToConsoleTest();
+            timer = 1.6f;
+        }
+        //*/
     }
 
 
     void SpawnRandom()
     {
-        Debug.Log("isBlockPlaced: " + isBlockPlaced);
         //pseudo random - slightly biased against a repeating piece, but only 1 reroll in original game, possibility of heavy droughts adds to the challenge
 
 

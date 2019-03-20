@@ -162,10 +162,32 @@ public class BlockController : MonoBehaviour
                 {
                     MatrixGrid.Lock(child2.position);
                 }
+                CheckRowClears();
                 Spawner.isBlockPlaced = true;
                 GameObject.Destroy(this);
             }
         }
     }
+
+    void CheckRowClears()
+    {
+        MatrixGrid.rowClears = 0;
+        for (int i = 0; i < 20; i++)
+        {
+            if (MatrixGrid.IsRowClear(i))
+            {
+                MatrixGrid.rowClears++;
+                Debug.Log("Row " + i + " Clear!");
+                DeleteAndShift(i);
+            }
+        }
+    }
+
+    void DeleteAndShift(int rowNumber)
+    {
+        //Destroy()
+    }
+
+
 
 }
