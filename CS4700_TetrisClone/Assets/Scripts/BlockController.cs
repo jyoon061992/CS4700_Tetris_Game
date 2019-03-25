@@ -4,35 +4,26 @@ using UnityEngine;
 
 public class BlockController : MonoBehaviour
 {
-
-    private int doubleAngle = 90;
-    private int quadrupleAngle = 90;
     private bool moveAllowed = false;
     private bool rotateAllowed = false;
 	private float delayStart, initialDelay = 4f/15f, autoDelay = .1f, delay;
 	private bool useDelay = true;
-	private Matrix4x4 rot;
-	private Vector4 c1, c2, c3, c4;
-	private float rads = Mathf.Deg2Rad * 90f;
 	private float curRot = 0;
 
-	private void Start() {
-		c1 = new Vector4(Mathf.Cos(rads), Mathf.Sin(rads), 0f, 0f);
-		c2 = new Vector4(-Mathf.Sin(rads), Mathf.Cos(rads), 0f, 0f);
-		c3 = new Vector4(0, 0, 1, 0);
-		c4 = new Vector4(0, 0, 0, 1);
-		rot = new Matrix4x4(c1, c2, c3, c4);
-	}
+	private bool valid = true;
 
 	void FixedUpdate()
     {
-        MoveInput();
-        RotateInput();
-        StartCoroutine(CheckBlockPosition());
-    }
+		CheckBlockPosition();
+	}
+
+	private void Update() {
+		MoveInput();
+		RotateInput();
+	}
 
 
-    void MoveInput() //should not move until figuring out if move is allowed since blocks may be in the way
+	void MoveInput() //should not move until figuring out if move is allowed since blocks may be in the way
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
@@ -52,8 +43,8 @@ public class BlockController : MonoBehaviour
 
 		if (Input.GetKeyUp(KeyCode.A)) {
 			foreach (Transform child in transform) {
-				moveAllowed = !MatrixGrid.IsBlockLeft(child.position); //if there is no block to the left, move left is allowed
-				if (!moveAllowed) {
+				//if there is no block to the left, move left is allowed
+				if (MatrixGrid.IsBlockLeft(Vector3Int.RoundToInt(child.position))) {
 					return;
 				}
 			}
@@ -61,25 +52,13 @@ public class BlockController : MonoBehaviour
 		}
 		else if (Input.GetKeyUp(KeyCode.D)) {
 			foreach (Transform child in transform) {
-				moveAllowed = !MatrixGrid.IsBlockRight(child.position); //if there is no block to the right, move right is allowed
-				if (!moveAllowed) {
+				//if there is no block to the right, move right is allowed
+				if (MatrixGrid.IsBlockRight(Vector3Int.RoundToInt(child.position))) {
 					return;
 				}
 			}
 			MoveBlockRight();
 		}
-		/*else if (Input.GetKeyUp(KeyCode.S)) //holding it should bring it down, but getkey is too fast, so introduce a timer to bring it down
-		{
-			delayStart = Time.time;
-			delay = initialDelay;
-			foreach (Transform child in transform) {
-				moveAllowed = !MatrixGrid.ReachedBottom(child.position);
-				if (!moveAllowed) {
-					return;
-				}
-			}
-			SoftDrop();
-		}*/
 
 
 		if (delayStart + delay <= Time.time) {
@@ -88,20 +67,27 @@ public class BlockController : MonoBehaviour
 			delay = autoDelay;
 			if (Input.GetKey(KeyCode.A)) {
 				foreach (Transform child in transform) {
-					moveAllowed = !MatrixGrid.IsBlockLeft(child.position); //if there is no block to the left, move left is allowed
-					if (!moveAllowed) {
+					//if there is no block to the left, move left is allowed
+					if (MatrixGrid.IsBlockLeft(Vector3Int.RoundToInt(child.position))) {
 						return;
 					}
 				}
 				MoveBlockLeft();
 			} else if (Input.GetKey(KeyCode.D)) {
 				foreach (Transform child in transform) {
-					moveAllowed = !MatrixGrid.IsBlockRight(child.position); //if there is no block to the right, move right is allowed
-					if (!moveAllowed) {
+					//if there is no block to the right, move right is allowed
+					if (MatrixGrid.IsBlockRight(Vector3Int.RoundToInt(child.position))) {
 						return;
 					}
 				}
 				MoveBlockRight();
+			} else if (Input.GetKey(KeyCode.S)) {
+				foreach (Transform child in transform) {
+					if (MatrixGrid.ReachedBottom(Vector3Int.RoundToInt(child.position))) {
+						return;
+					}
+				}
+				SoftDrop();
 			}
 		}
     }
@@ -109,104 +95,98 @@ public class BlockController : MonoBehaviour
 
     void RotateInput() //should not rotate until figuring out if rotate is allowed since blocks may be in the way
     {
+		curRot = 0;
         if (gameObject.tag.Equals("nRotateBlock")) //no rotations - blocks with no rotations (O block) - for readability and exiting method every time it is attempted
         {
             return;
         } else if (gameObject.tag.Equals("dRotateBlock")) //double rotations - blocks with two states of rotations
         {
-            if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow))
-            {
+            if (Input.GetKeyDown(KeyCode.RightArrow)) {
+				curRot = -90;
+			}
+				
+			if(Input.GetKeyDown(KeyCode.LeftArrow)) {
 				//if the rotate is allowed
 				curRot = 90;
+			}
 
-				c1 = new Vector4(Mathf.Cos(Mathf.Deg2Rad * curRot), Mathf.Sin(Mathf.Deg2Rad * curRot), 0f, 0f);
-				c2 = new Vector4(-Mathf.Sin(Mathf.Deg2Rad * curRot), Mathf.Cos(Mathf.Deg2Rad * curRot), 0f, 0f);
-				c3 = new Vector4(0, 0, 1, 0);
-				c4 = new Vector4(0, 0, 0, 1);
-				rot = new Matrix4x4(c1, c2, c3, c4);
+			if (curRot != 0) {
 				RotateBlock();
-            }
+			}
+            
         } else if (gameObject.tag.Equals("qRotateBlock")) //quadruple rotations - blocks with four states of rotations
         {
             if (Input.GetKeyDown(KeyCode.RightArrow))
             {
 				curRot = -90;
-				c1 = new Vector4(Mathf.Cos(Mathf.Deg2Rad * curRot), Mathf.Sin(Mathf.Deg2Rad * curRot), 0f, 0f);
-				c2 = new Vector4(-Mathf.Sin(Mathf.Deg2Rad * curRot), Mathf.Cos(Mathf.Deg2Rad * curRot), 0f, 0f);
-				c3 = new Vector4(0, 0, 1, 0);
-				c4 = new Vector4(0, 0, 0, 1);
-				rot = new Matrix4x4(c1, c2, c3, c4);
 				RotateBlock();
 			} else if (Input.GetKeyDown(KeyCode.LeftArrow)) {
                 curRot = 90;
-				c1 = new Vector4(Mathf.Cos(Mathf.Deg2Rad * curRot), Mathf.Sin(Mathf.Deg2Rad * curRot), 0f, 0f);
-				c2 = new Vector4(-Mathf.Sin(Mathf.Deg2Rad * curRot), Mathf.Cos(Mathf.Deg2Rad * curRot), 0f, 0f);
-				c3 = new Vector4(0, 0, 1, 0);
-				c4 = new Vector4(0, 0, 0, 1);
-				rot = new Matrix4x4(c1, c2, c3, c4);
 				RotateBlock();
 			}
 		}
     }
 
-
     void MoveBlockLeft()
     {
-        transform.position = new Vector3(transform.position.x - 1, transform.position.y, transform.position.z);
+		transform.position += Vector3Int.left;
     }
 
     void MoveBlockRight()
     {
-        transform.position = new Vector3(transform.position.x + 1, transform.position.y, transform.position.z);
+		transform.position += Vector3Int.right;
     }
 
     void SoftDrop()
     {
-        transform.position = new Vector3(transform.position.x, Spawner.activeBlock.transform.position.y - 1, Spawner.activeBlock.transform.position.z);
+		transform.position += Vector3Int.down;
     }
 
 
     void RotateBlock()
     {
-		bool moveAllowed = true; 
-
+		transform.Rotate(Vector3.forward, curRot);
 		foreach (Transform child in transform) {
-			Vector3 tempPos = transform.position + (Vector3)(rot * child.localPosition);
-			moveAllowed = !MatrixGrid.CheckPosFilled(tempPos);
-			//Debug.Log(tempPos + " " + (Vector3)(rot * child.localPosition));
-
-			if (!moveAllowed) {
+			if(MatrixGrid.CheckPosFilled(Vector3Int.RoundToInt(child.position))) {
+				transform.Rotate(Vector3.forward, -curRot);
 				return;
 			}
 		}
-
-		if (gameObject.tag.Equals("dRotateBlock")) {
-			transform.Rotate(Vector3.forward, curRot);
-			//doubleAngle = -doubleAngle;
-		}
-		else if (gameObject.tag.Equals("qRotateBlock")) {
-			transform.Rotate(Vector3.forward, curRot);
-		}
 	}
 
-    IEnumerator CheckBlockPosition()
-    {
-        foreach (Transform child in transform)
-        {
-            if (MatrixGrid.ReachedBottom(child.position))
-            {
-                Spawner.activeBlock = null;
-                yield return new WaitForSeconds(BlockFallTimer.timer + (14f / 60f));
-                foreach (Transform child2 in transform)
-                {
-                    MatrixGrid.Lock(child2.position);
-                    MatrixGrid.SetGrid(child2.position, child2.gameObject);
-                }
-                CheckRowClears();
-                Spawner.isBlockPlaced = true;
-                GameObject.Destroy(this);
-            }
-        }
+	void CheckBlockPosition() {
+		if (delayStart + delay > Time.time) {
+
+			valid = true;
+			foreach (Transform child in transform) {
+				if (MatrixGrid.CheckPosFilled(Vector3Int.RoundToInt(child.position))) {
+					MatrixGrid.gameOver = true;
+					return;
+				}
+				if (MatrixGrid.ReachedBottom(Vector3Int.RoundToInt(child.position))) {
+					valid = false;
+				}
+			}
+			if (valid)
+				SoftDrop();
+
+			foreach (Transform child in transform) {
+				if (MatrixGrid.ReachedBottom(Vector3Int.RoundToInt(child.position))) {
+
+					Spawner.activeBlock = null;
+					//yield return new WaitForSeconds(BlockFallTimer.timer + (14f / 60f));
+					foreach (Transform child2 in transform) {
+						MatrixGrid.Lock(Vector3Int.RoundToInt(child2.position));
+						MatrixGrid.SetGrid(Vector3Int.RoundToInt(child2.position), child2.gameObject);
+					}
+
+					CheckRowClears();
+					Spawner.isBlockPlaced = true;
+					Destroy(this);
+					break;
+				}
+			}
+		}
     }
 
     void CheckRowClears()
@@ -217,11 +197,7 @@ public class BlockController : MonoBehaviour
             if (MatrixGrid.IsRowClear(i))
             {
                 MatrixGrid.rowClears++;
-                Debug.Log("Row " + i + " Clear!");
             }
         }
     }
-
-
-
 }

@@ -9,7 +9,8 @@ public class NextLevel : MonoBehaviour
 
     public void NextLevelLoad()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex+1);
+		Time.timeScale = 1;
+        SceneManager.LoadScene(1);
     }
 
 }

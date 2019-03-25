@@ -6,171 +6,146 @@ public class MatrixGrid : MonoBehaviour
 {
     public static int row = 20;
     public static int column = 10;
-    public static bool[,] grid = new bool[row, column];
-    public static GameObject[,] blockGrid = new GameObject[row, column];
+    public static bool[,] grid = new bool[column, row];
+    public static GameObject[,] blockGrid = new GameObject[column, row];
     public static int rowClears = 0;
     private static bool rowCleared = false;
+	public static bool gameOver = false;
 
-    //-10 to 9 --> 0-19, -5 to 4 --> 0-9
-    private static float ConvertArrayX(float positionx)
-    {
-        positionx += 5;
-        return positionx;
-    }
-
-    private static float ConvertArrayY(float positiony)
-    {
-        positiony += 10;
-        return positiony;
-    }
-
-
-    public static void InitializeGrid()
-    {
-        for (int i = 0; i < row; i++)
-        {
-            for (int j = 0; j < column; j++)
-            {
+    public static void InitializeGrid() {
+		gameOver = false;
+        for (int i = 0; i < column; i++) {
+            for (int j = 0; j < row; j++) {
                 grid[i, j] = false;
             }
         }
     }
 
-    public static bool IsWithinBoundaries(Vector3 position)
+    /*public static bool IsWithinBoundaries(Vector3 position)
     {
-        if ((position.x >= -5) && (position.x <= 4) && (position.y >= -10))
-        {
+        if ((position.x >= -5) && (position.x <= 4) && (position.y >= -10)) {
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
-    }
+    }*/
 
-	private static bool IsInArray(Vector3 pos) {
-		if ((pos.x + 4) < 0) {
+	private static bool IsInArray(Vector3Int pos) {
+		if (pos.x < 0) {
 			return false;
 		}
 
-		if ((pos.x + 4) >= 9) {
+		if (pos.x > 9) {
 			return false;
 		}
 
-		if ((pos.y + 10) < 0) {
+		if (pos.y < 0) {
 			return false;
 		}
 
-		if ((pos.y + 10) >= 20) {
+		if (pos.y > 19) {
 			return false;
 		}
 
 		return true;
 	}
 
-	public static bool CheckPosFilled(Vector3 pos) {
+	public static bool CheckPosFilled(Vector3Int pos) {
 		if (IsInArray(pos)) {
-			return grid[(int)(pos.y + 10f), (int)(pos.x + 4f)];
+			return grid[pos.x, pos.y];
 		} else {
 			return true;
 		}
 	}
 
-    public static bool ReachedBottom(Vector3 position)
-    {
-        if (position.y == -10 || grid[(int)ConvertArrayY(position.y - 1), (int)ConvertArrayX(position.x)])
-        {
-            grid[(int)ConvertArrayY(position.y), (int)ConvertArrayX(position.x)] = true;
+    public static bool ReachedBottom(Vector3Int position) {
+		if (position.y <= 0) {
+			return true;
+		} else {
+			return grid[position.x, position.y - 1];
+		}
+    }
+
+    public static void Lock(Vector3Int position) {
+        grid[position.x, position.y] = true;
+    }
+
+    public static bool IsBlockLeft(Vector3Int position) {
+        if (IsInArray(position + Vector3Int.left)) { 
+            return grid[position.x - 1, position.y];
+		} else {
             return true;
         }
-        else
-        {
-            return false;
-        }
     }
 
-    public static void Lock(Vector3 position)
-    {
-        grid[(int)ConvertArrayY(position.y), (int)ConvertArrayX(position.x)] = true;
-    }
-
-    public static bool IsBlockLeft(Vector3 position)
-    {
-        if (grid[(int)ConvertArrayY(position.y), (int)ConvertArrayX(position.x - 1)] && IsWithinBoundaries(position))
-        {
+    public static bool IsBlockRight(Vector3Int position) {
+        if (IsInArray(position + Vector3Int.right)) { 
+            return grid[position.x + 1, position.y];
+        } else {
             return true;
         }
-        else
-        {
-            return false;
-        }
     }
 
-    public static bool IsBlockRight(Vector3 position)
-    {
-        if (grid[(int)ConvertArrayY(position.y), (int)ConvertArrayX(position.x + 1)] && IsWithinBoundaries(position))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    public static bool IsRowClear(int rowNumber)
-    {
-        for (int j = 0; j < column; j++)
-        {
-            if (!grid[rowNumber, j])
-            {
+    public static bool IsRowClear(int rowNumber) {
+		bool rowCleared = true;
+        for (int i = 0; i < column; i++) {
+            if (!grid[i, rowNumber]) {
                 rowCleared = false;
                 break;
-            }
-            else
-            {
+            } else {
                 rowCleared = true;
             }
         }
-        if (rowCleared)
-        {
-            for (int j = 0; j < column; j++)
-            {
-                grid[rowNumber, j] = false;
-                Destroy(blockGrid[rowNumber, j].gameObject);
-            }
+
+        if (rowCleared) {
+            for (int i = 0; i < column; i++) {
+                grid[i, rowNumber] = false;
+                Destroy(blockGrid[i, rowNumber]);
+				blockGrid[i, rowNumber] = null;
+			}
             ShiftRow(rowNumber);
         }
+
         return rowCleared;
     }
 
-    public static void ShiftRow(int rowNumber)
-    {
-        for (int i = rowNumber; i < row; i++)
-        {
-            for (int j = 0; j < column; j++)
-            {
-                if (blockGrid[i+1, j] != null && i+1<row)
-                {
-                    grid[i, j] = grid[i + 1, j];
-                    blockGrid[i, j] = blockGrid[i + 1, j];
-                    blockGrid[i, j].transform.position = new Vector3(j - 5, i - 10);
-                }
-                else
-                {
-                    blockGrid[i, j] = null;
-                    grid[i, j] = false;
-                }
+    public static void ShiftRow(int rowNumber) {
+		for (int j = rowNumber; j < row; j++) {
+			for (int i = 0; i < column; i++) {
+				if ((j + 1) < row) {
+					if (blockGrid[i, j + 1] != null) {
+						grid[i, j] = grid[i, j + 1];
+						blockGrid[i, j] = blockGrid[i, j + 1];
+						blockGrid[i, j].transform.position = new Vector3Int(i, j, 0);
+						blockGrid[i, j + 1] = null;
+						grid[i, j + 1] = false;
+					} else {
+						blockGrid[i, j] = null;
+						grid[i, j] = false;
+					}
+				}
             }
         }
     }
 
+	/*public static void ShiftRow2(int rowNumber) {
+		for (int i = rowNumber; i < row; i++) {
+			for (int j = 0; j < column; j++) {
+				if (blockGrid[i + 1, j] != null && i + 1 < row) {
+					grid[i, j] = grid[i + 1, j];
+					blockGrid[i, j] = blockGrid[i + 1, j];
+					blockGrid[i, j].transform.position = new Vector3(j - 5, i - 10);
+				}
+				else {
+					blockGrid[i, j] = null;
+					grid[i, j] = false;
+				}
+			}
+		}
+	}*/
 
-    public static void SetGrid(Vector3 position, GameObject fillObject)
-    {
-        blockGrid[(int)ConvertArrayY(position.y), (int)ConvertArrayX(position.x)] = fillObject;
+
+	public static void SetGrid(Vector3Int position, GameObject fillObject) {
+        blockGrid[position.x, position.y] = fillObject;
     }
-
-
-
 }

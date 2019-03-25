@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class BlockFallTimer : MonoBehaviour
 {
-
+	public TextMeshProUGUI levelText;
     public static int level;                  //set level based on # of line clears
     public static float timer;          //set timer delay based on level
     public static float alarm;          //set to timer every time it hits 0
@@ -44,19 +46,21 @@ public class BlockFallTimer : MonoBehaviour
             timer = 1f / 60f;
         }
 
-        softDropSpeed = 1/30f;
+
+		Time.fixedDeltaTime = timer;
+
+		softDropSpeed = 1/30f;
     }
 
     void FallSpeed()
     {
-        alarm -= Time.deltaTime;
+        /*alarm -= Time.deltaTime;
         if(alarm <= 0f)
         {
             if (Spawner.activeBlock == null)
             {
                 return;
             }
-            Spawner.activeBlock.transform.position = new Vector3(Spawner.activeBlock.transform.position.x, Spawner.activeBlock.transform.position.y - 1, Spawner.activeBlock.transform.position.z);
             if (Input.GetKey(KeyCode.S))
             {
                 alarm = softDropSpeed;
@@ -65,7 +69,7 @@ public class BlockFallTimer : MonoBehaviour
             {
                 alarm = timer;
             }
-        }  
+        } */ 
     }
 
     //formula for going to the next level:
