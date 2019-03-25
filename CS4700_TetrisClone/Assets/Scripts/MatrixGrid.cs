@@ -12,10 +12,7 @@ public class MatrixGrid : MonoBehaviour
     private static bool rowCleared = false;
 	public static bool gameOver = false;
 
-	public static AudioSource source;
-	public static AudioClip clear;
-
-	public static void InitializeGrid() {
+    public static void InitializeGrid() {
 		gameOver = false;
         for (int i = 0; i < column; i++) {
             for (int j = 0; j < row; j++) {
@@ -113,7 +110,6 @@ public class MatrixGrid : MonoBehaviour
     }
 
     public static void ShiftRow(int rowNumber) {
-		source.PlayOneShot(clear);
 		for (int j = rowNumber; j < row; j++) {
 			for (int i = 0; i < column; i++) {
 				if ((j + 1) < row) {

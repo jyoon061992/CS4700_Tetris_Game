@@ -13,18 +13,12 @@ public class Spawner : MonoBehaviour
     private string boolArray;
     private float timer = 1.6f;
 
-	public AudioSource source;
-	public AudioClip clip;
-
-	void Awake()
+    void Awake()
     {
         MatrixGrid.InitializeGrid();
         oldRandomBlock = 7;
         isBlockPlaced = true;
         boolArray = "";
-
-		MatrixGrid.source = source;
-		MatrixGrid.clear = clip;
     }
 
     void FixedUpdate()

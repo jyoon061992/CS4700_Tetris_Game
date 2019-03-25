@@ -9,8 +9,6 @@ public class BlockController : MonoBehaviour
 	private float delayStart, initialDelay = 4f/15f, autoDelay = .1f, delay;
 	private bool useDelay = true;
 	private float curRot = 0;
-	public AudioSource source;
-	public AudioClip move;
 
 	private bool valid = true;
 
@@ -132,19 +130,17 @@ public class BlockController : MonoBehaviour
     void MoveBlockLeft()
     {
 		transform.position += Vector3Int.left;
-		source.PlayOneShot(move);
     }
 
     void MoveBlockRight()
     {
 		transform.position += Vector3Int.right;
-		source.PlayOneShot(move);
-	}
+    }
 
     void SoftDrop()
     {
 		transform.position += Vector3Int.down;
-	}
+    }
 
 
     void RotateBlock()
@@ -156,7 +152,6 @@ public class BlockController : MonoBehaviour
 				return;
 			}
 		}
-		source.PlayOneShot(move);
 	}
 
 	void CheckBlockPosition() {
