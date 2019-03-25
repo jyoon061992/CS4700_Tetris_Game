@@ -216,16 +216,16 @@ public class BlockController : MonoBehaviour
         switch (MatrixGrid.rowClears)
         {
             case 1:
-                UpdateScore.score = 40 * BlockFallTimer.level;
+                UpdateScore.score += 40 * (BlockFallTimer.level+1);
                 break;
             case 2:
-                UpdateScore.score = 100 * BlockFallTimer.level;
+                UpdateScore.score += 100 * (BlockFallTimer.level+1);
                 break;
             case 3:
-                UpdateScore.score = 300 * BlockFallTimer.level;
+                UpdateScore.score += 300 * (BlockFallTimer.level+1);
                 break;
             case 4:
-                UpdateScore.score = 1200 * BlockFallTimer.level;
+                UpdateScore.score += 1200 * (BlockFallTimer.level+1);
                 break;
             default:
                 break;
