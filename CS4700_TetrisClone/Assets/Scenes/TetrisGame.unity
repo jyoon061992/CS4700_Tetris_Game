@@ -2243,7 +2243,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   source: {fileID: 2023449624}
-  move: {fileID: 8300000, guid: 4b2b752d50c038247ab72baa6ce547e5, type: 3}
+  move: {fileID: 8300000, guid: 08ce12312c26c4e49bd787c72130c1b6, type: 3}
 --- !u!4 &717435496
 Transform:
   m_ObjectHideFlags: 0
