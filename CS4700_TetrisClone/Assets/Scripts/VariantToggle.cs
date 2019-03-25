@@ -6,6 +6,13 @@ public class VariantToggle : MonoBehaviour
 {
     public GameObject leftpanel;
     public GameObject leftinversepanel;
+    private AudioSource aS;
+
+    private void Awake()
+    {
+        aS = GetComponent<AudioSource>();
+        aS.volume = 0;
+    }
 
     public void Toggle()
     {
@@ -18,6 +25,10 @@ public class VariantToggle : MonoBehaviour
         leftinversepanel.SetActive(!leftinversepanel.activeSelf);
         leftpanel.SetActive(!leftpanel.activeSelf);
 
+        if (aS.volume == 0)
+            aS.volume = 1;
+        else
+            aS.volume = 0;
     }
 
 
