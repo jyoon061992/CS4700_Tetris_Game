@@ -9,6 +9,7 @@ public class BlockController : MonoBehaviour
 	private float delayStart, initialDelay = 4f/15f, autoDelay = .1f, delay;
 	private bool useDelay = true;
 	private float curRot = 0;
+    public int totalRowClears;
 
 	private bool valid = true;
 
@@ -199,5 +200,28 @@ public class BlockController : MonoBehaviour
                 MatrixGrid.rowClears++;
             }
         }
+        totalRowClears += MatrixGrid.rowClears;
+        if (MatrixGrid.rowClears != 0 && totalRowClears > Mathf.Min(BlockFallTimer.level * 10 + 10, Mathf.Max(100, (BlockFallTimer.level * 10 - 50))))
+            BlockFallTimer.level++;
+        switch (MatrixGrid.rowClears)
+        {
+            case 1:
+                UpdateScore.score = 40 * BlockFallTimer.level;
+                break;
+            case 2:
+                UpdateScore.score = 100 * BlockFallTimer.level;
+                break;
+            case 3:
+                UpdateScore.score = 300 * BlockFallTimer.level;
+                break;
+            case 4:
+                UpdateScore.score = 1200 * BlockFallTimer.level;
+                break;
+            default:
+                break;
+        }
+
+        UpdateScore.DisplayScore();
+
     }
 }

@@ -20,10 +20,10 @@ public class UpdateScore : MonoBehaviour
 
     void Update()
     {
-        //SetScore();
+        SetScore();
     }
 
-    static void DisplayScore()
+    public static void DisplayScore()
     {
         scoreText.text = "Score: " + score.ToString("000000");
         levelText.text = "Level: " + BlockFallTimer.level.ToString();

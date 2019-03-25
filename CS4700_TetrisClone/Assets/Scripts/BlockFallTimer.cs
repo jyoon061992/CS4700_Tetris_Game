@@ -45,8 +45,6 @@ public class BlockFallTimer : MonoBehaviour
         } else if (level >= 29){
             timer = 1f / 60f;
         }
-
-
 		Time.fixedDeltaTime = timer;
 
 		softDropSpeed = 1/30f;
